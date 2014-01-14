@@ -117,6 +117,34 @@ typedef KIFTestStepResult (^KIFTestStepExecutionBlock)(KIFTestStep *step, NSErro
 + (void)setDefaultTimeout:(NSTimeInterval)newDefaultTimeout;
 
 /*!
+ @method setMajorSwipeDisplacement:
+ @abstract Sets the swipe distance, which affects the swipe speed.
+ @discussion To change the value, either subclass KIFTestStep and override this method or call it with a different value.
+ */
++ (void)setMajorSwipeDisplacement:(CGFloat)newSwipeDisplacement;
+
+/*!
+ @method setMinorSwipeDisplacement:
+ @abstract Sets the swipe 'noise' distance.
+ @discussion To change the value, either subclass KIFTestStep and override this method or call it with a different value.
+ */
++ (void)setMinorSwipeDisplacement:(CGFloat)newSwipeDisplacement;
+
+/*!
+ @method setNumberOfPointsInSwipePath:
+ @abstract Affects the swipe speed.
+ @discussion To change the value, either subclass KIFTestStep and override this method or call it with a different value.
+ */
++ (void)setNumberOfPointsInSwipePath:(NSUInteger)newNumberOfPoints;
+
+/*!
+ @method setNumberOfPointsInScrollPath:
+ @abstract Affects the scroll speed.
+ @discussion To change the value, either subclass KIFTestStep and override this method or call it with a different value.
+ */
++ (void)setNumberOfPointsInScrollPath:(NSUInteger)newNumberOfPoints;
+
+/*!
  @method stepWithDescription:executionBlock:
  @abstract Convenience initializer to create a new custom step.
  @param description A description of the what the step does. Required.

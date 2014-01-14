@@ -20,6 +20,12 @@
 
 static NSTimeInterval KIFTestStepDefaultTimeout = 10.0;
 
+static CGFloat KIFTestStepMajorSwipeDisplacement = 200.0;
+static CGFloat KIFTestStepMinorSwipeDisplacement = 5.0;
+
+static NSUInteger KIFTestStepNumberOfPointsInSwipePath = 20;
+static NSUInteger KIFTestStepNumberOfPointsInScrollPath = 5;
+
 @interface KIFTestStep ()
 
 @property (nonatomic, copy) KIFTestStepExecutionBlock executionBlock;
@@ -60,6 +66,26 @@ typedef CGPoint KIFDisplacement;
 + (void)setDefaultTimeout:(NSTimeInterval)newDefaultTimeout;
 {
     KIFTestStepDefaultTimeout = newDefaultTimeout;
+}
+
++ (void)setMajorSwipeDisplacement:(CGFloat)newSwipeDisplacement;
+{
+    KIFTestStepMajorSwipeDisplacement = newSwipeDisplacement;
+}
+
++ (void)setMinorSwipeDisplacement:(CGFloat)newSwipeDisplacement;
+{
+    KIFTestStepMinorSwipeDisplacement = newSwipeDisplacement;
+}
+
++ (void)setNumberOfPointsInSwipePath:(NSUInteger)newNumberOfPoints
+{
+    KIFTestStepNumberOfPointsInSwipePath = newNumberOfPoints;
+}
+
++ (void)setNumberOfPointsInScrollPath:(NSUInteger)newNumberOfPoints
+{
+    KIFTestStepNumberOfPointsInScrollPath = newNumberOfPoints;
 }
 
 + (id)stepWithDescription:(NSString *)description executionBlock:(KIFTestStepExecutionBlock)executionBlock;
@@ -639,8 +665,6 @@ typedef CGPoint KIFDisplacement;
     }];
 }
 
-#define NUM_POINTS_IN_SWIPE_PATH 20
-
 + (id)stepToSwipeViewWithAccessibilityLabel:(NSString *)label inDirection:(KIFSwipeDirection)direction
 {
     // The original version of this came from http://groups.google.com/group/kif-framework/browse_thread/thread/df3f47eff9f5ac8c
@@ -680,22 +704,20 @@ typedef CGPoint KIFDisplacement;
 
         KIFDisplacement swipeDisplacement = [self _displacementForSwipingInDirection:direction];
 
-        CGPoint swipePath[NUM_POINTS_IN_SWIPE_PATH];
+        CGPoint swipePath[KIFTestStepNumberOfPointsInSwipePath];
 
-        for (int pointIndex = 0; pointIndex < NUM_POINTS_IN_SWIPE_PATH; pointIndex++)
+        for (int pointIndex = 0; pointIndex < KIFTestStepNumberOfPointsInSwipePath; pointIndex++)
         {
-            CGFloat swipeProgress = ((CGFloat)pointIndex)/(NUM_POINTS_IN_SWIPE_PATH - 1);
+            CGFloat swipeProgress = ((CGFloat)pointIndex)/(KIFTestStepNumberOfPointsInSwipePath - 1);
             swipePath[pointIndex] = CGPointMake(swipeStart.x + (swipeProgress * swipeDisplacement.x),
                                                 swipeStart.y + (swipeProgress * swipeDisplacement.y));
         }
 
-        [viewToSwipe dragAlongPathWithPoints:swipePath count:NUM_POINTS_IN_SWIPE_PATH];
+        [viewToSwipe dragAlongPathWithPoints:swipePath count:KIFTestStepNumberOfPointsInSwipePath];
 
         return KIFTestStepResultSuccess;
     }];
 }
-
-#define NUM_POINTS_IN_SCROLL_PATH 5
 
 + (id)stepToScrollViewWithAccessibilityLabel:(NSString *)label byFractionOfSizeHorizontal:(CGFloat)horizontalFraction vertical:(CGFloat)verticalFraction;
 {
@@ -726,17 +748,17 @@ typedef CGPoint KIFDisplacement;
         CGPoint scrollStart = CGPointCenteredInRect(elementFrame);
         scrollStart.x -= scrollDisplacement.width / 2;
         scrollStart.y -= scrollDisplacement.height / 2;
+
+        CGPoint scrollPath[KIFTestStepNumberOfPointsInScrollPath];
         
-        CGPoint scrollPath[NUM_POINTS_IN_SCROLL_PATH];
-        
-        for (int pointIndex = 0; pointIndex < NUM_POINTS_IN_SCROLL_PATH; pointIndex++)
+        for (int pointIndex = 0; pointIndex < KIFTestStepNumberOfPointsInScrollPath; pointIndex++)
         {
-            CGFloat scrollProgress = ((CGFloat)pointIndex)/(NUM_POINTS_IN_SCROLL_PATH - 1);
+            CGFloat scrollProgress = ((CGFloat)pointIndex)/(KIFTestStepNumberOfPointsInScrollPath - 1);
             scrollPath[pointIndex] = CGPointMake(scrollStart.x + (scrollProgress * scrollDisplacement.width),
                                                  scrollStart.y + (scrollProgress * scrollDisplacement.height));
         }
-        
-        [viewToScroll dragAlongPathWithPoints:scrollPath count:NUM_POINTS_IN_SCROLL_PATH];
+
+        [viewToScroll dragAlongPathWithPoints:scrollPath count:KIFTestStepNumberOfPointsInScrollPath];
         
         return KIFTestStepResultSuccess;
     }];
@@ -998,9 +1020,6 @@ typedef CGPoint KIFDisplacement;
     return element;
 }
 
-#define MAJOR_SWIPE_DISPLACEMENT 200
-#define MINOR_SWIPE_DISPLACEMENT 5
-
 + (KIFDisplacement)_displacementForSwipingInDirection:(KIFSwipeDirection)direction
 {
     switch (direction)
@@ -1009,16 +1028,16 @@ typedef CGPoint KIFDisplacement;
         // swipe if you move purely horizontally or vertically, so need a
         // slight orthogonal offset too.
         case KIFSwipeDirectionRight:
-            return CGPointMake(MAJOR_SWIPE_DISPLACEMENT, MINOR_SWIPE_DISPLACEMENT);
+            return CGPointMake(KIFTestStepMajorSwipeDisplacement, KIFTestStepMinorSwipeDisplacement);
             break;
         case KIFSwipeDirectionLeft:
-            return CGPointMake(-MAJOR_SWIPE_DISPLACEMENT, MINOR_SWIPE_DISPLACEMENT);
+            return CGPointMake(-KIFTestStepMajorSwipeDisplacement, KIFTestStepMinorSwipeDisplacement);
             break;
         case KIFSwipeDirectionUp:
-            return CGPointMake(MINOR_SWIPE_DISPLACEMENT, -MAJOR_SWIPE_DISPLACEMENT);
+            return CGPointMake(KIFTestStepMinorSwipeDisplacement, -KIFTestStepMajorSwipeDisplacement);
             break;
         case KIFSwipeDirectionDown:
-            return CGPointMake(MINOR_SWIPE_DISPLACEMENT, MAJOR_SWIPE_DISPLACEMENT);
+            return CGPointMake(KIFTestStepMinorSwipeDisplacement, KIFTestStepMajorSwipeDisplacement);
             break;
         default:
             return CGPointZero;
