@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name         = "KIF"
-  s.version      = "1.0.1"
+  s.version      = "1.1.0"
   s.summary      = "Keep It Functional - iOS UI acceptance testing."
   s.homepage     = "https://github.com/kif-framework/KIF/"
   s.license      = 'Apache 2.0'
   s.authors      = 'Eric Firestone', 'Jim Puls'
-  s.source       = { :git => "https://github.com/kif-framework/KIF.git", :tag => "v1.0.1" }
+  s.source       = { :git => "https://github.com/kif-framework/KIF.git", :tag => "v1.1.0" }
   s.platform     = :ios, '4.3'
   s.source_files = 'Classes', 'Additions'
   s.public_header_files = 'Classes/**/*.h', 'Additions/**/*-KIFAdditions.h'
